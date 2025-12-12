@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Lịch thi{% endblock %}
+{% block content %}
+<h2 class="mb-3">🕒 Tạo / Sửa lịch thi</h2>
+
+<form method="post" class="row g-3">
+  {{ csrf_token() }}
+  <div class="col-md-6">
+    <label class="form-label">Học phần</label>
+    <select class="form-select" name="course_id" required>
+      {% for c in courses %}<option value="{{ c.id }}">{{ c.code }} - {{ c.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Ngày</label>
+    <input type="date" class="form-control" name="exam_date" required>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Giờ</label>
+    <input type="time" class="form-control" name="exam_time" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Phòng</label>
+    <input class="form-control" name="room">
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary">Lưu</button>
+    <a class="btn btn-light" href="{{ url_for('main.exams') }}">Hủy</a>
+  </div>
+</form>
+
+<style>.btn-primary{background:#0d4a8c;border-color:#0d4a8c}</style>
+{% endblock %}

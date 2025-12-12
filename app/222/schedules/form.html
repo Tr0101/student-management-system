@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Thời khóa biểu{% endblock %}
+{% block content %}
+<h2 class="mb-3">📅 Tạo / Sửa thời khóa biểu</h2>
+
+<form method="post" class="row g-3">
+  {{ csrf_token() }}
+  <div class="col-md-6">
+    <label class="form-label">Học phần</label>
+    <select class="form-select" name="course_id" required>
+      {% for c in courses %}<option value="{{ c.id }}">{{ c.code }} - {{ c.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Ngày trong tuần</label>
+    <select class="form-select" name="weekday" required>
+      <option value="2">Thứ 2</option><option value="3">Thứ 3</option><option value="4">Thứ 4</option>
+      <option value="5">Thứ 5</option><option value="6">Thứ 6</option><option value="7">Thứ 7</option><option value="CN">CN</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Tiết / Giờ</label>
+    <input class="form-control" name="period">
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary">Lưu</button>
+    <a class="btn btn-light" href="{{ url_for('main.schedule') }}">Hủy</a>
+  </div>
+</form>
+
+<style>.btn-primary{background:#0d4a8c;border-color:#0d4a8c}</style>
+{% endblock %}

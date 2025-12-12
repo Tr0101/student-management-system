@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa' if course else 'Thêm' }} học phần{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="m-0">📘 {{ 'Sửa' if course else 'Thêm' }} học phần</h2>
+  <a href="{{ url_for('courses.index') }}" class="btn btn-outline-secondary">← Quay lại</a>
+</div>
+
+<form method="post" class="row g-3">
+  {{ csrf_token() }}
+  <div class="col-md-4">
+    <label class="form-label">Mã môn</label>
+    <input name="code" value="{{ (form.code.data if form else course.code) if course else (form.code.data if form else '') }}" class="form-control" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Tên môn</label>
+    <input name="name" value="{{ (form.name.data if form else course.name) if course else (form.name.data if form else '') }}" class="form-control" required>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Tín chỉ</label>
+    <input type="number" min="1" max="10" name="credit" value="{{ (form.credit.data if form else course.credit) if course else (form.credit.data if form else '') }}" class="form-control">
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary">Lưu</button>
+    <a class="btn btn-light" href="{{ url_for('courses.index') }}">Hủy</a>
+  </div>
+</form>
+
+<style>.btn-primary{background:#0d4a8c;border-color:#0d4a8c}</style>
+{% endblock %}

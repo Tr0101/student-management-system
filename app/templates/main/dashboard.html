@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}🎓 Hệ thống hỗ trợ ra quyết định học vụ{% endblock %}
+{% block content %}
+
+<style>
+  .stat-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 20px;
+    transition: all 0.3s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+  .stat-icon {
+    font-size: 1.8rem;
+    opacity: 0.8;
+  }
+  .card-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    font-weight: 600;
+    border-radius: 10px 10px 0 0;
+  }
+  .table thead th {
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .table-hover tbody tr:hover {
+    background-color: #f1f6ff;
+  }
+  h3.text-center {
+    font-weight: 700;
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
+
+<div class="container mt-4">
+  <h3 class="text-center mb-4">🎓 Bảng điều khiển quản lý sinh viên</h3>
+
+  <!-- Thống kê tổng quan -->
+  <div class="row text-center mb-4 g-3">
+    <div class="col-md-4">
+      <div class="stat-card bg-light border-start border-primary border-4">
+        <div class="stat-icon text-primary mb-2"><i class="bi bi-people-fill"></i></div>
+        <h6 class="text-muted">Tổng sinh viên</h6>
+        <h2 class="fw-bold text-primary">{{ total_students }}</h2>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card bg-light border-start border-success border-4">
+        <div class="stat-icon text-success mb-2"><i class="bi bi-journal-text"></i></div>
+        <h6 class="text-muted">Tổng môn học</h6>
+        <h2 class="fw-bold text-success">{{ total_courses }}</h2>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card bg-light border-start border-info border-4">
+        <div class="stat-icon text-info mb-2"><i class="bi bi-list-check"></i></div>
+        <h6 class="text-muted">Số lượt đăng ký học</h6>
+        <h2 class="fw-bold text-info">{{ total_enrolls }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Biểu đồ và Top môn học -->
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-bar-chart-fill me-2"></i>Phân bố điểm sinh viên
+        </div>
+        <div class="card-body">
+          <canvas id="gradeChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-trophy-fill me-2"></i>Top 5 môn học được đăng ký nhiều nhất
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0 align-middle">
+            <thead>
+              <tr>
+                <th>Môn học</th>
+                <th class="text-center">Số lượt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in top_courses %}
+              <tr>
+                <td>{{ c.name }}</td>
+                <td class="text-center fw-semibold">{{ c.cnt }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="2" class="text-center text-muted py-3">Chưa có dữ liệu</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lịch thi và Thời khóa biểu -->
+  <div class="row g-3 mt-3">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-calendar2-check-fill me-2"></i>Lịch thi sắp tới
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0 align-middle">
+            <thead>
+              <tr>
+                <th>Môn học</th>
+                <th>Ngày thi</th>
+                <th>Phòng</th>
+                <th>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for exam in exams %}
+              <tr>
+                <td>{{ exam.course.name }}</td>
+                <td>{{ exam.date.strftime('%d/%m/%Y') if exam.date else '-' }}</td>
+                <td>{{ exam.room or '-' }}</td>
+                <td>{{ exam.note or '' }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="4" class="text-center text-muted py-3">Chưa có lịch thi</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-clock-history me-2"></i>Thời khóa biểu hiện tại
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0 align-middle">
+            <thead>
+              <tr>
+                <th>Thứ</th>
+                <th>Ca học</th>
+                <th>Môn học</th>
+                <th>Phòng</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in schedules %}
+              <tr>
+                <td>{{ s.weekday }}</td>
+                <td>{{ s.time }}</td>
+                <td>{{ s.course.name }}</td>
+                <td>{{ s.room }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="4" class="text-center text-muted py-3">Chưa có thời khóa biểu</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ChartJS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('gradeChart').getContext('2d');
+const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+gradient.addColorStop(0, '#4facfe');
+gradient.addColorStop(1, '#00f2fe');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: {{ labels|safe }},
+    datasets: [{
+      label: 'Số sinh viên',
+      data: {{ values|safe }},
+      backgroundColor: gradient,
+      borderRadius: 6,
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: 'Phân bố điểm (theo thang 10)', color: '#333', font: { size: 15, weight: 'bold' } },
+      tooltip: {
+        backgroundColor: '#333',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderWidth: 0,
+        cornerRadius: 6
+      }
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { color: '#444' } },
+      x: { ticks: { color: '#444' } }
+    }
+  }
+});
+</script>
+
+{% endblock %}

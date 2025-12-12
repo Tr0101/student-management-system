@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Học phần{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="m-0">📘 Danh sách học phần</h2>
+  <a href="{{ url_for('courses.create') }}" class="btn btn-primary">+ Thêm học phần</a>
+</div>
+
+<form class="row g-2 mb-3" method="get" action="{{ url_for('courses.index') }}">
+  <div class="col-sm-6 col-md-4">
+    <input name="q" value="{{ request.args.get('q','') }}" class="form-control" placeholder="Tìm mã / tên môn...">
+  </div>
+  <div class="col-sm-3 col-md-2">
+    <button class="btn btn-outline-primary w-100">Tìm</button>
+  </div>
+</form>
+
+{% if courses|length == 0 %}
+  <div class="alert alert-info">Chưa có học phần.</div>
+{% else %}
+  <div class="row g-3">
+    {% for c in courses %}
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <h5 class="card-title mb-1">{{ c.name }}</h5>
+              <span class="badge bg-primary">{{ c.code }}</span>
+            </div>
+            <div class="text-secondary small mb-3">
+              {% if c.credit %}Số tín chỉ: <strong>{{ c.credit }}</strong>{% endif %}
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{{ url_for('courses.edit', id=c.id) }}" class="btn btn-sm btn-outline-primary">Sửa</a>
+              <form method="post" action="{{ url_for('courses.delete', id=c.id) }}"
+                    onsubmit="return confirm('Xóa học phần này?');">
+                {{ csrf_token() }}
+                <button class="btn btn-sm btn-outline-danger">Xóa</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<style>
+  h2{font-weight:700}
+  .btn-primary{background:#0d4a8c;border-color:#0d4a8c}
+  .btn-outline-primary{border-color:#0d4a8c;color:#0d4a8c}
+  .btn-outline-primary:hover{background:#0d4a8c;color:#fff}
+</style>
+{% endblock %}

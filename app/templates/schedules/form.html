@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}🗓️ {{ 'Cập nhật' if schedule else 'Thêm' }} thời khóa biểu{% endblock %}
+{% block content %}
+
+<div class="card shadow-lg p-4 mt-3" style="max-width:850px;margin:auto;">
+  <h5 class="mb-3">
+    <i class="bi bi-calendar2-week me-2 text-primary"></i>
+    {{ 'Cập nhật' if schedule else 'Thêm' }} thời khóa biểu
+  </h5>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label fw-bold">Môn học</label>
+        <select class="form-select" name="course_id" required>
+          {% for c in courses %}
+            <option value="{{ c.id }}" {% if schedule and schedule.course_id==c.id %}selected{% endif %}>
+              {{ c.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Thứ</label>
+        <input name="weekday" class="form-control" value="{{ schedule.weekday if schedule else '' }}" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Giờ học</label>
+        <input name="time" class="form-control" value="{{ schedule.time if schedule else '' }}" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Phòng</label>
+        <input name="room" class="form-control" value="{{ schedule.room if schedule else '' }}" required>
+      </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-between">
+      <button class="btn btn-primary">
+        <i class="bi bi-save"></i> Lưu
+      </button>
+      <a href="{{ url_for('schedules.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Quay lại
+      </a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-lg p-4" style="width: 380px; border-radius: 18px;">
+    
+    <h4 class="text-center mb-3 fw-bold">🔐 Đăng nhập hệ thống</h4>
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <div class="mb-3">
+        {{ form.email.label(class="form-label fw-semibold") }}
+        {{ form.email(class="form-control form-control-lg", placeholder="Nhập email của bạn") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.password.label(class="form-label fw-semibold") }}
+        {{ form.password(class="form-control form-control-lg", placeholder="Nhập mật khẩu") }}
+      </div>
+
+      {{ form.submit(class="btn btn-primary w-100 btn-lg mt-2") }}
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}🔐 Đăng nhập hệ thống{% endblock %}
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(120deg, #007bff, #00c6ff);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .login-card {
+    background: white;
+    max-width: 420px;
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease;
+  }
+  .login-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    text-align: center;
+    padding: 25px 0;
+  }
+  .login-header h4 {
+    margin: 0;
+    font-weight: 600;
+  }
+  .login-body {
+    padding: 25px 30px;
+  }
+  .form-control {
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .btn-primary {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: 0.3s;
+  }
+  .btn-primary:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
+  }
+  .demo-info {
+    font-size: 0.9rem;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 10px 15px;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="login-card mt-5">
+  <div class="login-header">
+    <i class="bi bi-mortarboard-fill fs-1"></i>
+    <h4 class="mt-2">🎓 Hệ thống QLSV</h4>
+    <small>Đăng nhập để tiếp tục</small>
+  </div>
+
+  <div class="login-body">
+    <form method="POST" action="{{ url_for('auth.login') }}">
+      {{ form.hidden_tag() }}
+
+      <div class="mb-3">
+        {{ form.email.label(class="form-label fw-semibold") }}
+        {{ form.email(class="form-control", placeholder="Nhập email của bạn") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.password.label(class="form-label fw-semibold") }}
+        {{ form.password(class="form-control", placeholder="Nhập mật khẩu") }}
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-2 mt-2">
+        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+      </button>
+    </form>
+
+    <hr class="my-4">
+    <div class="demo-info text-muted">
+      <p class="mb-1 fw-semibold">🧪 Tài khoản demo:</p>
+      <p class="mb-1"><b>admin@demo.com</b>, <b>teacher@demo.com</b>, <b>student@demo.com</b></p>
+      <p class="mb-0">Mật khẩu: <code>123456</code></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

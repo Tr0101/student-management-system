@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Bảng điều khiển{% endblock %}
+{% block content %}
+
+<h2 class="fw-semibold mb-4 text-dark">🎓 Sinh viên quản lý Bảng điều khiển</h2>
+
+<div class="row g-4 mb-4">
+
+  <!-- Tổng sinh viên -->
+  <div class="col-md-4">
+    <div class="info-card">
+      <div class="text-muted small">Tổng sinh viên</div>
+      <div class="fs-1 fw-bold text-primary">{{ total_students }}</div>
+    </div>
+  </div>
+
+  <!-- Tổng môn học -->
+  <div class="col-md-4">
+    <div class="info-card">
+      <div class="text-muted small">Tổng môn học</div>
+      <div class="fs-1 fw-bold text-success">{{ total_courses }}</div>
+    </div>
+  </div>
+
+  <!-- Tổng lượt ghi danh -->
+  <div class="col-md-4">
+    <div class="info-card">
+      <div class="text-muted small">Số lượt đăng ký học</div>
+      <div class="fs-1 fw-bold text-info">{{ total_enrollments }}</div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="row g-4">
+  
+  <!-- Biểu đồ phân bố điểm -->
+  <div class="col-lg-7">
+    <div class="p-4 bg-white shadow-sm rounded-4">
+      <h6 class="fw-semibold mb-3">📊 Phân chia điểm sinh viên</h6>
+      <canvas id="scoreChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Top 5 môn học -->
+  <div class="col-lg-5">
+    <div class="p-4 bg-white shadow-sm rounded-4">
+      <h6 class="fw-semibold mb-3">🏆 Top 5 môn học được đăng ký nhiều nhất</h6>
+      <table class="table table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Môn học</th>
+            <th class="text-end">Số lượt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if top_courses %}
+            {% for c, count in top_courses %}
+            <tr>
+              <td>{{ c }}</td>
+              <td class="text-end fw-semibold">{{ count }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="2" class="text-center text-muted">Không có dữ liệu</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const scoreData = {{ score_distribution|tojson }};
+  const ctx = document.getElementById('scoreChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9','9-10'],
+      datasets: [{
+        data: scoreData,
+        borderWidth: 3,
+        tension: 0.35
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+
+{% endblock %}

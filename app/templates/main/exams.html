@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}🕒 Lịch thi{% endblock %}
+{% block content %}
+
+<style>
+  .exam-card {
+    max-width: 900px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+  }
+  .exam-card:hover {
+    transform: translateY(-2px);
+  }
+  .card-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header i {
+    font-size: 1.4rem;
+  }
+  table th, table td {
+    vertical-align: middle !important;
+  }
+  .table-hover tbody tr:hover {
+    background-color: #f3f8ff;
+  }
+  .upcoming {
+    background-color: #e6f4ff !important;
+    border-left: 4px solid #007bff;
+  }
+</style>
+
+<div class="card exam-card mt-4">
+  <div class="card-header p-3">
+    <i class="bi bi-calendar2-check-fill"></i>
+    <div>
+      <h5 class="mb-0">🕒 Lịch thi học kỳ</h5>
+      <small>Danh sách các môn thi sắp tới của sinh viên</small>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle mb-0">
+        <thead class="table-light">
+          <tr class="text-center">
+            <th>Học phần</th>
+            <th>Ngày thi</th>
+            <th>Phòng</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in exams %}
+          {# Tô sáng lịch thi sắp tới (trong 7 ngày) #}
+          {% set days_left = (e.date - now().date()).days if e.date else None %}
+          <tr class="{% if days_left is not none and days_left <= 7 and days_left >= 0 %}upcoming{% endif %}">
+            <td class="fw-semibold">{{ e.course.name }}</td>
+            <td class="text-center">
+              {% if e.date %}
+                {% if days_left is not none and days_left <= 7 and days_left >= 0 %}
+                  <span class="badge bg-warning text-dark">
+                    {{ e.date.strftime("%d/%m/%Y") }} — Còn {{ days_left }} ngày
+                  </span>
+                {% else %}
+                  {{ e.date.strftime("%d/%m/%Y") }}
+                {% endif %}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td class="text-center">{{ e.room or "-" }}</td>
+            <td>{{ e.note or "-" }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-muted py-3">Chưa có lịch thi.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

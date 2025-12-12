@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}📅 Thời khóa biểu{% endblock %}
+{% block content %}
+
+<style>
+  .schedule-card {
+    max-width: 900px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
+  }
+  .schedule-card:hover { transform: translateY(-2px); }
+  .card-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+  }
+  .card-header h5 { margin-bottom: 0; }
+  table th, table td { vertical-align: middle !important; }
+  .table-hover tbody tr:hover { background-color: #f4faff; }
+
+  .day-badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 10px;
+  }
+  .day-badge[data-day="Thứ Hai"] { background-color: #007bff; }
+  .day-badge[data-day="Thứ Ba"] { background-color: #28a745; }
+  .day-badge[data-day="Thứ Tư"] { background-color: #17a2b8; }
+  .day-badge[data-day="Thứ Năm"] { background-color: #ffc107; color: #000; }
+  .day-badge[data-day="Thứ Sáu"] { background-color: #fd7e14; }
+  .day-badge[data-day="Thứ Bảy"] { background-color: #6f42c1; }
+  .day-badge[data-day="Chủ Nhật"] { background-color: #dc3545; }
+</style>
+
+<div class="card schedule-card mt-4">
+  <div class="card-header">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-calendar-week-fill fs-5"></i>
+      <div>
+        <h5 class="mb-0">📅 Thời khóa biểu</h5>
+        <small>Danh sách các buổi học trong học kỳ hiện tại</small>
+      </div>
+    </div>
+
+    {% if current_user.role in ['admin', 'teacher'] %}
+    <a href="{{ url_for('schedules.create') }}" class="btn btn-light text-primary fw-semibold shadow-sm">
+      <i class="bi bi-plus-circle"></i> Thêm
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle mb-0">
+        <thead class="table-light text-center">
+          <tr>
+            <th>Học phần</th>
+            <th>Thứ</th>
+            <th>Thời gian</th>
+            <th>Phòng</th>
+            {% if current_user.role in ['admin', 'teacher'] %}
+            <th>Hành động</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in schedules %}
+          <tr>
+            <td class="fw-semibold">{{ s.course.name }}</td>
+            <td class="text-center">
+              <span class="day-badge" data-day="{{ s.weekday }}">{{ s.weekday }}</span>
+            </td>
+            <td class="text-center">{{ s.time }}</td>
+            <td class="text-center">{{ s.room }}</td>
+
+            {% if current_user.role in ['admin', 'teacher'] %}
+            <td class="text-center">
+              <a href="{{ url_for('schedules.edit', id=s.id) }}" class="btn btn-sm btn-warning">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="post" action="{{ url_for('schedules.delete', id=s.id) }}" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-danger" onclick="return confirm('Xóa thời khóa biểu này?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-3">Chưa có dữ liệu thời khóa biểu.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}🧾 Ghi danh & Điểm{% endblock %}
+{% block content %}
+
+<style>
+  .enroll-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    transition: 0.3s ease;
+  }
+  .enroll-card:hover {
+    transform: translateY(-2px);
+  }
+  .card-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-header h5 {
+    margin: 0;
+    font-weight: 600;
+  }
+  .btn-outline-secondary, .btn-outline-success, .btn-primary {
+    font-weight: 500;
+    border-radius: 8px;
+  }
+  .table thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-align: center;
+  }
+  .table-hover tbody tr:hover {
+    background-color: #f1f6ff;
+  }
+  .badge-grade {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 10px;
+  }
+  .badge-high { background-color: #d4edda; color: #155724; }   /* >=8 */
+  .badge-mid { background-color: #fff3cd; color: #856404; }    /* 5-7.9 */
+  .badge-low { background-color: #f8d7da; color: #721c24; }    /* <5 */
+</style>
+
+<div class="card enroll-card mt-4">
+  <div class="card-header p-3">
+    <h5>🧾 Ghi danh & Điểm</h5>
+    <div>
+      <a class="btn btn-outline-secondary btn-sm me-1" href="{{ url_for('enrollments.upload') }}">
+        <i class="bi bi-file-earmark-arrow-up"></i> Import Excel
+      </a>
+      <a class="btn btn-outline-success btn-sm me-1" href="{{ url_for('enrollments.export_excel') }}">
+        <i class="bi bi-file-earmark-arrow-down"></i> Export Excel
+      </a>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('enrollments.assign') }}">
+        <i class="bi bi-plus-circle"></i> Ghi danh / Nhập điểm
+      </a>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>MSSV</th>
+            <th>Họ tên</th>
+            <th>Mã HP</th>
+            <th>Tên học phần</th>
+            <th>TC</th>
+            <th>Học kỳ</th>
+            <th>Điểm</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in enrolls %}
+          <tr>
+            <td class="text-center">{{ e.student.code }}</td>
+            <td>{{ e.student.full_name }}</td>
+            <td class="text-center">{{ e.course.code }}</td>
+            <td>{{ e.course.name }}</td>
+            <td class="text-center">{{ e.course.credits }}</td>
+            <td class="text-center">{{ e.semester }}</td>
+            <td class="text-center">
+              {% if e.grade is none %}
+                <span class="text-muted">-</span>
+              {% elif e.grade >= 8 %}
+                <span class="badge badge-grade badge-high">{{ e.grade }}</span>
+              {% elif e.grade >= 5 %}
+                <span class="badge badge-grade badge-mid">{{ e.grade }}</span>
+              {% else %}
+                <span class="badge badge-grade badge-low">{{ e.grade }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-3">
+              <i class="bi bi-emoji-frown"></i> Chưa có dữ liệu ghi danh.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

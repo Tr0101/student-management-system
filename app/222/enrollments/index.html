@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Ghi danh / Điểm{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="m-0">🧾 Ghi danh & điểm</h2>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('enrollments.assign') }}" class="btn btn-outline-primary">+ Ghi danh</a>
+    <a href="{{ url_for('enrollments.upload') }}" class="btn btn-primary">⬆️ Import điểm</a>
+  </div>
+</div>
+
+{% if enrollments|length == 0 %}
+  <div class="alert alert-info">Chưa có bản ghi ghi danh.</div>
+{% else %}
+  <div class="row g-3">
+    {% for e in enrollments %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h6 class="mb-1">{{ e.student.full_name }} <span class="text-secondary">({{ e.student.student_code }})</span></h6>
+            <div class="small text-secondary mb-2">Môn: <strong>{{ e.course.code }} - {{ e.course.name }}</strong></div>
+            {% if e.score is not none %}
+              <div class="badge bg-success">Điểm: {{ e.score }}</div>
+            {% else %}
+              <div class="badge bg-secondary">Chưa có điểm</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<style>
+  .btn-primary{background:#0d4a8c;border-color:#0d4a8c}
+  .btn-outline-primary{border-color:#0d4a8c;color:#0d4a8c}
+  .btn-outline-primary:hover{background:#0d4a8c;color:#fff}
+</style>
+{% endblock %}

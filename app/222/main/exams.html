@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Lịch thi{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="m-0">🕒 Lịch thi</h2>
+  {% if current_user.role in ['admin','teacher'] %}
+    <a href="{{ url_for('exams.create') }}" class="btn btn-primary">+ Thêm lịch thi</a>
+  {% endif %}
+</div>
+
+{% if exams|length == 0 %}
+  <div class="alert alert-info">Chưa có lịch thi.</div>
+{% else %}
+  <div class="row g-3">
+    {% for ex in exams %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h6 class="mb-1">{{ ex.course.code }} - {{ ex.course.name }}</h6>
+            <div class="small text-secondary">Ngày: <strong>{{ ex.exam_date }}</strong> • Giờ: <strong>{{ ex.exam_time }}</strong> • Phòng: <strong>{{ ex.room or '-' }}</strong></div>
+            {% if current_user.role in ['admin','teacher'] %}
+              <div class="mt-2">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('exams.edit', id=ex.id) }}">Sửa</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

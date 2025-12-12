@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Ghi danh sinh viên{% endblock %}
+{% block content %}
+<h2 class="mb-3">🧾 Ghi danh sinh viên vào học phần</h2>
+
+<form method="post" class="row g-3">
+  {{ csrf_token() }}
+  <div class="col-md-6">
+    <label class="form-label">Sinh viên</label>
+    <select name="student_id" class="form-select" required>
+      {% for s in students %}
+        <option value="{{ s.id }}">{{ s.student_code }} - {{ s.full_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Học phần</label>
+    <select name="course_id" class="form-select" required>
+      {% for c in courses %}
+        <option value="{{ c.id }}">{{ c.code }} - {{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary">Ghi danh</button>
+    <a class="btn btn-light" href="{{ url_for('enrollments.index') }}">Hủy</a>
+  </div>
+</form>
+
+<style>.btn-primary{background:#0d4a8c;border-color:#0d4a8c}</style>
+{% endblock %}

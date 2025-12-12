@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Sửa' if student else 'Thêm' }} sinh viên{% endblock %}
+{% block content %}
+
+<style>
+  .student-card {
+    max-width: 800px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  .student-card:hover {
+    transform: translateY(-2px);
+  }
+  .card-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: #fff;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header i {
+    font-size: 1.5rem;
+  }
+  .form-label {
+    font-weight: 500;
+  }
+  .btn-primary {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+  .btn-secondary:hover {
+    background-color: #e4e7eb;
+  }
+</style>
+
+<div class="card student-card">
+  <div class="card-header p-3">
+    <i class="bi bi-person-lines-fill"></i>
+    <div>
+      <h5 class="mb-0">{{ 'Sửa thông tin sinh viên' if student else 'Thêm sinh viên mới' }}</h5>
+      <small>📋 Nhập đầy đủ thông tin sinh viên vào biểu mẫu bên dưới</small>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form method="post" class="mt-2">
+      <!-- CSRF Token -->
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Mã SV</label>
+          <input class="form-control" name="code" value="{{ student.code if student else '' }}" required placeholder="VD: SV00123">
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label">Họ tên</label>
+          <input class="form-control" name="full_name" value="{{ student.full_name if student else '' }}" required placeholder="Nguyễn Văn A">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" value="{{ student.email if student else '' }}" required placeholder="sv00123@vlu.edu.vn">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Lớp</label>
+          <input class="form-control" name="class_name" value="{{ student.class_name if student else '' }}" placeholder="VD: DA22TTB">
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button class="btn btn-primary me-2">
+          <i class="bi bi-save2"></i> Lưu lại
+        </button>
+        <a class="btn btn-secondary" href="{{ url_for('students.index') }}">
+          <i class="bi bi-arrow-left-circle"></i> Hủy
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

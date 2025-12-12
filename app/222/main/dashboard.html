@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}🎓 Hệ thống hỗ trợ ra quyết định học vụ{% endblock %}
+{% block content %}
+<div class="container mt-4">
+
+  <h3 class="text-center mb-4">🎓 Bảng điều khiển quản lý sinh viên</h3>
+
+  <!-- Thống kê tổng quan -->
+  <div class="row text-center mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="border p-3 rounded shadow-sm">
+        <h5 class="text-muted">Tổng sinh viên</h5>
+        <h3 class="text-primary fw-bold">{{ total_students }}</h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="border p-3 rounded shadow-sm">
+        <h5 class="text-muted">Tổng môn học</h5>
+        <h3 class="text-success fw-bold">{{ total_courses }}</h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="border p-3 rounded shadow-sm">
+        <h5 class="text-muted">Số lượt đăng ký học</h5>
+        <h3 class="text-info fw-bold">{{ total_enrolls }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phân bố điểm và top môn học -->
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          📊 Phân bố điểm sinh viên
+        </div>
+        <div class="card-body">
+          <canvas id="gradeChart" width="100%" height="70"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          🏆 Top 5 môn học được đăng ký nhiều nhất
+        </div>
+        <div class="card-body">
+          <table class="table table-sm table-striped mb-0">
+            <thead>
+              <tr>
+                <th>Môn học</th>
+                <th>Số lượt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in top_courses %}
+              <tr>
+                <td>{{ c.name }}</td>
+                <td>{{ c.cnt }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="2" class="text-center text-muted">Chưa có dữ liệu</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bảng Lịch thi & Thời khóa biểu -->
+  <div class="row mt-4">
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          📅 Lịch thi sắp tới
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>Môn học</th>
+                <th>Ngày thi</th>
+                <th>Phòng</th>
+                <th>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for exam in exams %}
+              <tr>
+                <td>{{ exam.course.name }}</td>
+                <td>{{ exam.date.strftime('%d/%m/%Y') if exam.date else '-' }}</td>
+                <td>{{ exam.room or '-' }}</td>
+                <td>{{ exam.note or '' }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="4" class="text-center text-muted">Chưa có lịch thi</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          🕒 Thời khóa biểu hiện tại
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>Thứ</th>
+                <th>Ca học</th>
+                <th>Môn học</th>
+                <th>Phòng</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in schedules %}
+              <tr>
+                <td>{{ s.weekday }}</td>
+                <td>{{ s.time }}</td>
+                <td>{{ s.course.name }}</td>
+                <td>{{ s.room }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="4" class="text-center text-muted">Chưa có thời khóa biểu</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Biểu đồ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('gradeChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: {{ labels|safe }},
+    datasets: [{
+      label: 'Số sinh viên',
+      data: {{ values|safe }},
+      backgroundColor: ['#5B8FF9', '#61DDAA', '#65789B', '#F6BD16', '#7262fd']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: 'Phân bố điểm (theo thang 10)' }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
+
+{% endblock %}

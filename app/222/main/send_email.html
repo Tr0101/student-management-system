@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Gửi Email{% endblock %}
+{% block content %}
+<h2 class="mb-3">📧 Gửi email thủ công</h2>
+
+<form method="post" class="row g-3">
+  {{ csrf_token() }}
+  <div class="col-md-6">
+    <label class="form-label">Tới</label>
+    <input name="to" class="form-control" placeholder="ví dụ: sv1@demo.com, sv2@demo.com" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Tiêu đề</label>
+    <input name="subject" class="form-control" required>
+  </div>
+  <div class="col-12">
+    <label class="form-label">Nội dung</label>
+    <textarea name="body" rows="6" class="form-control" required></textarea>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary">Gửi</button>
+  </div>
+</form>
+
+<style>.btn-primary{background:#0d4a8c;border-color:#0d4a8c}</style>
+{% endblock %}

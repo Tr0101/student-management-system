@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Thời khóa biểu{% endblock %}
+{% block content %}
+<h2 class="mb-3">📅 Thời khóa biểu</h2>
+
+{% if schedules|length == 0 %}
+  <div class="alert alert-info">Chưa có thời khóa biểu.</div>
+{% else %}
+  <div class="row g-3">
+    {% for sc in schedules %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h6 class="mb-1">{{ sc.course.code }} - {{ sc.course.name }}</h6>
+            <div class="small text-secondary">Ngày: <strong>{{ sc.weekday }}</strong> • Tiết/Giờ: <strong>{{ sc.period }}</strong></div>
+            {% if current_user.role in ['admin','teacher'] %}
+              <div class="mt-2">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('schedules.edit', id=sc.id) }}">Sửa</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

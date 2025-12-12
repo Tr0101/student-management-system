@@ -1,0 +1,352 @@
+{% extends 'base.html' %}
+{% block title %}📊 Dashboard - QLSV{% endblock %}
+{% block content %}
+
+<style>
+  body {
+    background-color: #f8fafc;
+    color: #222;
+  }
+
+  /* ===== CARD STYLE ===== */
+  .card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease;
+    background: white;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== HEADER SECTION ===== */
+  .dashboard-header {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+    text-align: center;
+  }
+  .dashboard-header h3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .dashboard-header p {
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  /* ===== SUMMARY CARDS ===== */
+  .stat-card .card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    height: 140px;
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card .card-body::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
+  .stat-card .card-content {
+    position: relative;
+    z-index: 1;
+  }
+  .stat-card h6 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .stat-card h2 {
+    font-size: 2.5rem;
+    margin: 0;
+  }
+  .stat-card i {
+    font-size: 3rem;
+    opacity: 0.25;
+    position: relative;
+    z-index: 0;
+  }
+  .stat-card:nth-child(1) .card-body { 
+    background: linear-gradient(135deg, #4facfe, #00f2fe); 
+  }
+  .stat-card:nth-child(2) .card-body { 
+    background: linear-gradient(135deg, #43e97b, #38f9d7); 
+    color: #222; 
+  }
+  .stat-card:nth-child(3) .card-body { 
+    background: linear-gradient(135deg, #fa709a, #fee140); 
+    color: #222; 
+  }
+
+  /* ===== CHARTS ===== */
+  .chart-box .card-body {
+    padding: 1.5rem;
+  }
+  .chart-title {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ===== TOP COURSES ===== */
+  .course-item {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  .course-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+  }
+  .course-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+  }
+  .course-count {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress {
+    height: 10px;
+    border-radius: 10px;
+    background-color: #e9ecef;
+    margin-top: 0.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    border-radius: 10px;
+    transition: width 0.8s ease;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+  }
+
+  /* ===== GPA CARD ===== */
+  .gpa-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  .gpa-card h5 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .gpa-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .gpa-label {
+    opacity: 0.9;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+  .gpa-card .btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  .gpa-card .btn:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+  }
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+</style>
+
+<div class="container-fluid mt-3">
+
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <h3><i class="bi bi-speedometer2 me-2"></i>Dashboard - Hệ thống quản lý sinh viên</h3>
+    <p>Tổng quan và thống kê hoạt động của hệ thống</p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4 stat-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-content">
+            <h6>Tổng sinh viên</h6>
+            <h2 class="fw-bold">{{ total_students }}</h2>
+          </div>
+          <i class="bi bi-people-fill"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 stat-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-content">
+            <h6>Tổng học phần</h6>
+            <h2 class="fw-bold">{{ total_courses }}</h2>
+          </div>
+          <i class="bi bi-journal-bookmark-fill"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 stat-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-content">
+            <h6>Bản ghi điểm</h6>
+            <h2 class="fw-bold">{{ total_enrolls }}</h2>
+          </div>
+          <i class="bi bi-list-check"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts & Top Courses -->
+  <div class="row g-3">
+    <div class="col-md-7">
+      <div class="card chart-box">
+        <div class="card-body">
+          <h5 class="chart-title">
+            <i class="bi bi-bar-chart-line me-2 text-primary"></i>
+            Phân bố điểm sinh viên (Thang 10)
+          </h5>
+          <canvas id="gradeChart" height="160"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="chart-title">
+            <i class="bi bi-trophy-fill text-warning me-2"></i>Top 5 học phần phổ biến
+          </h5>
+          {% for name, cnt in top_courses %}
+            <div class="course-item">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="course-name">{{ name }}</span>
+                <span class="course-count">{{ cnt }}</span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" style="width: {{ (cnt / max_enrolls|default(1) * 100)|round(1) }}%"></div>
+              </div>
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <i class="bi bi-inbox"></i>
+              <p class="mb-0">Chưa có dữ liệu</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if gpa_info %}
+      <div class="gpa-card mt-3">
+        <h5><i class="bi bi-mortarboard-fill me-2"></i>Thông tin học tập</h5>
+        <div class="gpa-label">Tổng tín chỉ tích lũy</div>
+        <div class="gpa-value">{{ gpa_info.credits }}</div>
+        <div class="gpa-label mt-3">GPA (Thang 4.0)</div>
+        <div class="gpa-value">{{ gpa_info.gpa }}</div>
+        <a class="btn btn-sm mt-3 w-100" 
+           href="{{ url_for('enrollments.transcript_pdf', student_id=current_user.student_id) }}">
+          <i class="bi bi-download me-1"></i> Tải bảng điểm PDF
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Chart Script -->
+<script>
+const ctx = document.getElementById('gradeChart').getContext('2d');
+const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+gradient.addColorStop(0, '#4facfe');
+gradient.addColorStop(1, '#00f2fe');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: {{ labels|tojson }},
+    datasets: [{
+      data: {{ values|tojson }},
+      backgroundColor: gradient,
+      borderRadius: 10,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { 
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        padding: 12,
+        borderRadius: 8,
+        titleFont: { size: 14, weight: 'bold' },
+        bodyFont: { size: 13 },
+      }
+    },
+    scales: {
+      y: { 
+        beginAtZero: true, 
+        ticks: { stepSize: 1, color: '#666', font: { size: 12 } },
+        grid: { color: 'rgba(0, 0, 0, 0.05)', drawBorder: false }
+      },
+      x: { 
+        ticks: { color: '#666', font: { size: 12 } },
+        grid: { display: false, drawBorder: false }
+      }
+    },
+  }
+});
+</script>
+{% endblock %}

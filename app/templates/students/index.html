@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% block title %}👩‍🎓 Sinh viên - QLSV{% endblock %}
+{% block content %}
+
+<style>
+  body {
+    background-color: #f8fafc;
+    color: #222;
+  }
+
+  /* ===== CARD STYLE ===== */
+  .card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease;
+    background-color: #ffffff;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== HEADER SECTION ===== */
+  .header-section {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+  }
+
+  /* ===== SEARCH BOX ===== */
+  .search-box {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  .search-input {
+    position: relative;
+  }
+  .search-input input {
+    padding-left: 45px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+  .search-input input:focus {
+    border-color: #4facfe;
+    box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+  }
+  .search-input i {
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    color: #4facfe;
+    font-size: 1.1rem;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn-primary {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+    transition: all 0.3s ease;
+    color: white;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
+  }
+
+  .btn-outline-secondary {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: #333;
+  }
+  .btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-color: #4facfe;
+    color: #4facfe;
+  }
+
+  /* ===== TABLE STYLE ===== */
+  .table-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .table thead th {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+  .table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f0f2f5;
+  }
+  .table-hover tbody tr:hover {
+    background: linear-gradient(135deg, #f1f7ff, #e3f2fd);
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.15);
+  }
+  .table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+  }
+
+  /* ===== STUDENT CODE BADGE ===== */
+  .student-code {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    color: #222;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-weight: 700;
+    display: inline-block;
+  }
+
+  /* ===== ACTION BUTTONS ===== */
+  .btn-action {
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  .btn-outline-primary {
+    border: 2px solid #4facfe;
+    color: #4facfe;
+  }
+  .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    transform: translateY(-1px);
+  }
+  .btn-outline-danger {
+    border: 2px solid #fa709a;
+    color: #fa709a;
+  }
+  .btn-outline-danger:hover {
+    background: linear-gradient(135deg, #fa709a, #fee140);
+    color: #222;
+    transform: translateY(-1px);
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #888;
+  }
+  .empty-state i {
+    font-size: 3rem;
+    color: #ddd;
+    margin-bottom: 1rem;
+  }
+</style>
+
+<div class="container-fluid mt-3">
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-1 fw-bold">
+          <i class="bi bi-people-fill me-2"></i>Quản lý sinh viên
+        </h4>
+        <p class="mb-0 opacity-90">Danh sách toàn bộ sinh viên trong hệ thống</p>
+      </div>
+      <a class="btn btn-light shadow-sm" href="{{ url_for('students.create') }}">
+        <i class="bi bi-person-plus-fill me-1"></i> Thêm sinh viên mới
+      </a>
+    </div>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-box">
+    <form class="row g-3 align-items-center">
+      <div class="col-md-9">
+        <div class="search-input">
+          <i class="bi bi-search"></i>
+          <input name="q" value="{{ q }}" class="form-control" placeholder="Tìm kiếm theo tên, MSSV hoặc email...">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-secondary w-100">
+          <i class="bi bi-funnel me-2"></i> Tìm kiếm
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table Card -->
+  <div class="card table-card">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th><i class="bi bi-hash me-1"></i>MSSV</th>
+            <th><i class="bi bi-person me-1"></i>Họ và tên</th>
+            <th><i class="bi bi-envelope me-1"></i>Email</th>
+            <th><i class="bi bi-building me-1"></i>Lớp</th>
+            <th class="text-end"><i class="bi bi-gear me-1"></i>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in students %}
+          <tr>
+            <td><span class="student-code">{{ s.code }}</span></td>
+            <td class="fw-semibold">{{ s.full_name }}</td>
+            <td><i class="bi bi-envelope-fill text-muted me-1"></i>{{ s.email }}</td>
+            <td><i class="bi bi-mortarboard-fill text-primary me-1"></i>{{ s.class_name }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary btn-action me-1" 
+                 href="{{ url_for('students.edit', id=s.id) }}">
+                <i class="bi bi-pencil-square"></i> Sửa
+              </a>
+              <form method="post" action="{{ url_for('students.delete', id=s.id) }}" 
+                    class="d-inline" 
+                    onsubmit="return confirm('⚠️ Bạn có chắc chắn muốn xóa sinh viên này không?')">
+                <button class="btn btn-sm btn-outline-danger btn-action">
+                  <i class="bi bi-trash"></i> Xóa
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="empty-state">
+              <i class="bi bi-inbox"></i>
+              <h5 class="mt-2">Không tìm thấy sinh viên nào</h5>
+              <p class="text-muted">Hãy thử tìm kiếm với từ khóa khác hoặc thêm sinh viên mới</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

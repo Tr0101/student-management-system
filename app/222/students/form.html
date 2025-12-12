@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa' if student else 'Thêm' }} sinh viên{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="m-0">👩‍🎓 {{ 'Sửa' if student else 'Thêm' }} sinh viên</h2>
+  <a href="{{ url_for('students.index') }}" class="btn btn-outline-secondary">← Quay lại</a>
+</div>
+
+<form method="post" class="row g-3">
+  {{ csrf_token() }}
+
+  <div class="col-md-6">
+    <label class="form-label">Họ tên</label>
+    <input name="full_name" value="{{ (form.full_name.data if form else student.full_name) if student else (form.full_name.data if form else '') }}"
+           class="form-control" required>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">MSSV</label>
+    <input name="student_code" value="{{ (form.student_code.data if form else student.student_code) if student else (form.student_code.data if form else '') }}"
+           class="form-control" required>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Lớp</label>
+    <input name="class_name" value="{{ (form.class_name.data if form else student.class_name) if student else (form.class_name.data if form else '') }}"
+           class="form-control">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Email</label>
+    <input type="email" name="email" value="{{ (form.email.data if form else student.email) if student else (form.email.data if form else '') }}"
+           class="form-control">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Ngành</label>
+    <input name="major" value="{{ (form.major.data if form else student.major) if student else (form.major.data if form else '') }}"
+           class="form-control">
+  </div>
+
+  <div class="col-12">
+    <button class="btn btn-primary">Lưu</button>
+    <a class="btn btn-light" href="{{ url_for('students.index') }}">Hủy</a>
+  </div>
+</form>
+
+<style>
+  h2{font-weight:700}
+  .btn-primary{background:#0d4a8c;border-color:#0d4a8c}
+</style>
+{% endblock %}

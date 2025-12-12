@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}📤 Import Excel{% endblock %}
+{% block content %}
+
+<style>
+  .import-card {
+    max-width: 700px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+  }
+  .import-card:hover {
+    transform: translateY(-2px);
+  }
+  .card-header {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header i {
+    font-size: 1.4rem;
+  }
+  .upload-area {
+    border: 2px dashed #a6c8ff;
+    padding: 30px;
+    text-align: center;
+    border-radius: 12px;
+    background: #f8fbff;
+    transition: 0.3s ease;
+  }
+  .upload-area:hover {
+    background: #eef6ff;
+    border-color: #007bff;
+  }
+  .btn-primary {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+</style>
+
+<div class="card import-card mt-4">
+  <div class="card-header p-3">
+    <i class="bi bi-file-earmark-spreadsheet"></i>
+    <div>
+      <h5 class="mb-0">📤 Import điểm từ Excel</h5>
+      <small>Tải tệp Excel chứa dữ liệu sinh viên và điểm</small>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <p class="text-muted">
+      Cột bắt buộc (không phân biệt hoa thường): 
+      <code>student_code</code>, 
+      <code>course_code</code>, 
+      <code>semester</code>, 
+      <code>grade</code>
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+      <div class="upload-area mb-3">
+        <i class="bi bi-cloud-arrow-up fs-2 text-primary"></i>
+        <p class="mt-2 mb-1 fw-semibold">Chọn hoặc kéo thả tệp Excel vào đây</p>
+        <input type="file" name="file" accept=".xlsx,.xls" class="form-control mt-3" required>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-primary px-4">
+          <i class="bi bi-upload"></i> Tải lên
+        </button>
+        <a class="btn btn-secondary ms-2" href="{{ url_for('enrollments.index') }}">
+          <i class="bi bi-arrow-left-circle"></i> Quay lại
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

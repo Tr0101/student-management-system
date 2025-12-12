@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Sinh viên{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="m-0">👩‍🎓 Danh sách sinh viên</h2>
+  <a href="{{ url_for('students.create') }}" class="btn btn-primary">
+    + Thêm sinh viên
+  </a>
+</div>
+
+<form class="row g-2 mb-3" method="get" action="{{ url_for('students.index') }}">
+  <div class="col-sm-6 col-md-4">
+    <input name="q" value="{{ request.args.get('q','') }}" class="form-control" placeholder="Tìm tên / MSSV / email...">
+  </div>
+  <div class="col-sm-3 col-md-2">
+    <button class="btn btn-outline-primary w-100">Tìm</button>
+  </div>
+</form>
+
+{% if students|length == 0 %}
+  <div class="alert alert-info">Chưa có sinh viên.</div>
+{% else %}
+  <div class="row g-3">
+    {% for s in students %}
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1">{{ s.full_name or s.name }}</h5>
+                <div class="text-secondary small">MSSV: <strong>{{ s.student_code or s.code }}</strong></div>
+              </div>
+              <span class="badge bg-warning text-dark">SV</span>
+            </div>
+
+            <hr class="text-muted">
+
+            <ul class="list-unstyled small mb-3">
+              {% if s.email %}<li>📧 {{ s.email }}</li>{% endif %}
+              {% if s.class_name %}<li>🏫 Lớp: {{ s.class_name }}</li>{% endif %}
+              {% if s.major %}<li>📚 Ngành: {{ s.major }}</li>{% endif %}
+            </ul>
+
+            <div class="d-flex gap-2">
+              <a href="{{ url_for('students.edit', id=s.id) }}" class="btn btn-sm btn-outline-primary">Sửa</a>
+              <form method="post" action="{{ url_for('students.delete', id=s.id) }}"
+                    onsubmit="return confirm('Xóa sinh viên này?');">
+                {{ csrf_token() }}
+                <button class="btn btn-sm btn-outline-danger">Xóa</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if pagination %}
+    <nav class="mt-3">
+      <ul class="pagination">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+          <a class="page-link" href="{{ url_for('students.index', page=pagination.prev_num, q=request.args.get('q')) }}">«</a>
+        </li>
+        {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+          {% if p %}
+            <li class="page-item {% if p == pagination.page %}active{% endif %}">
+              <a class="page-link" href="{{ url_for('students.index', page=p, q=request.args.get('q')) }}">{{ p }}</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+          {% endif %}
+        {% endfor %}
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+          <a class="page-link" href="{{ url_for('students.index', page=pagination.next_num, q=request.args.get('q')) }}">»</a>
+        </li>
+      </ul>
+    </nav>
+  {% endif %}
+{% endif %}
+
+<style>
+  h2{font-weight:700}
+  .card-title{font-weight:600}
+  .btn-primary{background:#0d4a8c;border-color:#0d4a8c}
+  .btn-outline-primary{border-color:#0d4a8c;color:#0d4a8c}
+  .btn-outline-primary:hover{background:#0d4a8c;color:#fff}
+  .page-link{color:#0d4a8c}
+  .page-item.active .page-link{background:#ffc107;border-color:#ffc107;color:#111}
+</style>
+{% endblock %}
